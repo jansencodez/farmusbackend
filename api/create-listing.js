@@ -1,25 +1,36 @@
-const mongoose = require('mongoose');
-const Product = require('../../models/Product');
-const User = require('../../models/User');
-const authenticateToken = require('../../utils/authenticateToken');
-const upload = require('../../utils/upload'); 
-const connectDB = require('../../config/db');
+import mongoose from 'mongoose';
+import Product from '../models/Product';
+import User from '../models/User';
+import authenticateToken from '../utils/authenticateToken';
+import upload from '../utils/upload'; // multer middleware
+import connectDB from '../config/db';
+import cloudinary from '../config/cloudinary'; // Cloudinary config
 
 export default async function handler(req, res) {
   await connectDB();
 
-  // First authenticate the user
+  // Authenticate the user
   authenticateToken(req, res, async () => {
     // Apply the upload middleware to handle file uploads
     upload.single('productImage')(req, res, async (err) => {
       if (err) {
+        console.error('File upload error:', err); // Log the upload error
         return res.status(400).json({ message: 'File upload error' });
       }
 
       const { name, description, price, category } = req.body;
-      const productImage = req.file ? req.file.path : null; // Get the uploaded image file
+      const productImage = req.file; // Get the uploaded image file
 
       try {
+        let imageUrl = null;
+
+        // If an image was uploaded, upload it to Cloudinary
+        if (productImage) {
+          // Upload to Cloudinary using the file's path
+          const result = await cloudinary.uploader.upload(productImage.path);
+          imageUrl = result.secure_url; // Get the Cloudinary image URL
+        }
+
         // Convert price to Decimal128 if provided
         const formattedPrice = price ? mongoose.Types.Decimal128.fromString(price) : null;
 
@@ -28,7 +39,7 @@ export default async function handler(req, res) {
           name,
           description,
           price: formattedPrice,
-          imageUrl: productImage,
+          imageUrl, // Use Cloudinary image URL
           category,
           createdBy: req.user.userId, // User's ID from the token
         });
@@ -42,7 +53,7 @@ export default async function handler(req, res) {
         // Send a success response
         res.status(201).json({ message: 'Product created successfully', product });
       } catch (err) {
-        // Handle any errors
+        console.error('Error creating product:', err); // Log the error for debugging
         res.status(500).json({ message: 'Server error' });
       }
     });

@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     resetPasswordToken: String,
-resetPasswordExpires: Date,
+    resetPasswordExpires: Date,
     profilePicture: { type: String }, // Add this field to store the path to the profile picture
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
     walletBalance: { type: mongoose.Schema.Types.Decimal128, default: 0.0 },

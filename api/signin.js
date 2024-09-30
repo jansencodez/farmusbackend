@@ -1,8 +1,8 @@
 // api/auth/signin.js
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../../models/User');
-const connectDB = require('../../config/db');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import User from '../models/User';
+import connectDB from '../config/db';
 
 export default  async function handler (req, res) {
   await connectDB();

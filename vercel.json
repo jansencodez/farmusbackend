@@ -7,6 +7,13 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1.js"
+    },
+    {
+      "src": "/api/users/:id",
+      "dest": "/api/users/[id]"
+    }
   ]
 }

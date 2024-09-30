@@ -1,6 +1,5 @@
 import connectDB from '../../config/db';
 import User from '../../models/User';
-import jwt from 'jsonwebtoken';
 
 export default async function handler(req, res) {
   await connectDB();
@@ -12,15 +11,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const token = req.headers['authorization']?.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET);
-    
+    // Fetch the user by ID
     const user = await User.findById(id);
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json(user);
+
+    // Send the public user data as a response (avoid sending sensitive info)
+    res.status(200).json(user);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 }
