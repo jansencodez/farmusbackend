@@ -37,6 +37,6 @@ export default async function handler (req, res) {
     });
   } catch (err) {
     console.error('SignIn Error:', err.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error ocurred' });
   }
 };
