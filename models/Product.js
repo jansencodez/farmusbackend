@@ -28,7 +28,7 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        enum: ['Vegetables', 'Fruits', 'Grains', 'Dairy', 'Meat', 'Others'], // Example categories
+        enum: ['Vegetables', 'Fruits', 'Grains', 'Dairy', 'Meat', 'Poultry', 'Others'], // Example categories
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
