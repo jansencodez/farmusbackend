@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const authenticateToken = require('../utils/authenticateToken');
-const upload = require('../utils/upload');
-const connectDB = require('../config/db');
+const User = require("../models/User");
+const authenticateToken = require("../utils/authenticateToken");
+const upload = require("../utils/upload");
+const connectDB = require("../config/db");
 
 module.exports = async (req, res) => {
   await connectDB();
@@ -9,9 +9,9 @@ module.exports = async (req, res) => {
   // Authenticate the user using the token
   authenticateToken(req, res, async () => {
     // Use the upload middleware for handling profile picture uploads
-    upload.single('profilePicture')(req, res, async (err) => {
+    upload.single("profilePicture")(req, res, async (err) => {
       if (err) {
-        return res.status(400).json({ message: 'File upload error' });
+        return res.status(400).json({ message: "File upload error" });
       }
 
       try {
@@ -26,7 +26,9 @@ module.exports = async (req, res) => {
 
         // Validate the request body
         if (!name || !email) {
-          return res.status(400).json({ message: 'Name and email are required' });
+          return res
+            .status(400)
+            .json({ message: "Name and email are required" });
         }
 
         // Prepare update data object
@@ -44,14 +46,14 @@ module.exports = async (req, res) => {
 
         // If user not found
         if (!updatedUser) {
-          return res.status(404).json({ message: 'User not found' });
+          return res.status(404).json({ message: "User not found" });
         }
 
         // Return the updated user in the response
         res.json({ user: updatedUser });
       } catch (error) {
-        console.error('Error updating profile:', error); // Log error for debugging
-        res.status(500).json({ message: 'Server error' });
+        console.error("Error updating profile:", error); // Log error for debugging
+        res.status(500).json({ message: "Server error" });
       }
     });
   });

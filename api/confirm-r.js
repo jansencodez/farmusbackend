@@ -1,11 +1,9 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const connectDB = require('../config/db');
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const connectDB = require("../config/db");
 
 export default async function handler(req, res) {
-
   await connectDB();
   const { token, newPassword } = req.body;
 
@@ -16,7 +14,9 @@ export default async function handler(req, res) {
     });
 
     if (!user) {
-      return res.status(400).json({ message: 'Password reset token is invalid or has expired.' });
+      return res
+        .status(400)
+        .json({ message: "Password reset token is invalid or has expired." });
     }
 
     // Update user password
@@ -25,8 +25,8 @@ export default async function handler(req, res) {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Password has been reset successfully.' });
+    res.status(200).json({ message: "Password has been reset successfully." });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 }

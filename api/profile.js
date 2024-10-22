@@ -1,6 +1,6 @@
-const User = require('../models/User');
-const authenticateToken = require('../utils/authenticateToken');
-const connectDB = require('../config/db');
+const User = require("../models/User");
+const authenticateToken = require("../utils/authenticateToken");
+const connectDB = require("../config/db");
 
 module.exports = async (req, res) => {
   await connectDB();
@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
       const user = await User.findById(req.user.userId);
 
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: "User not found" });
       }
 
       res.json({
@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
         products: user.products,
       });
     } catch (err) {
-      res.status(500).json({ message: 'Server error' });
+      res.status(500).json({ message: "Server error" });
     }
   });
 };

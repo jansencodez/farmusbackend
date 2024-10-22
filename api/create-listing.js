@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
-import Product from '../models/Product';
-import User from '../models/User';
-import authenticateToken from '../utils/authenticateToken';
-import upload from '../utils/upload'; // multer middleware
-import connectDB from '../config/db';
-import cloudinary from '../config/cloudinary'; // Cloudinary config
+import mongoose from "mongoose";
+import Product from "../models/Product";
+import User from "../models/User";
+import authenticateToken from "../utils/authenticateToken";
+import upload from "../utils/upload"; // multer middleware
+import connectDB from "../config/db";
+import cloudinary from "../config/cloudinary"; // Cloudinary config
 
 export default async function handler(req, res) {
   await connectDB();
@@ -12,10 +12,10 @@ export default async function handler(req, res) {
   // Authenticate the user
   authenticateToken(req, res, async () => {
     // Apply the upload middleware to handle file uploads
-    upload.single('productImage')(req, res, async (err) => {
+    upload.single("productImage")(req, res, async (err) => {
       if (err) {
-        console.error('File upload error:', err); // Log the upload error
-        return res.status(400).json({ message: 'File upload error' });
+        console.error("File upload error:", err); // Log the upload error
+        return res.status(400).json({ message: "File upload error" });
       }
 
       const { name, description, price, category } = req.body;
@@ -32,7 +32,9 @@ export default async function handler(req, res) {
         }
 
         // Convert price to Decimal128 if provided
-        const formattedPrice = price ? mongoose.Types.Decimal128.fromString(price) : null;
+        const formattedPrice = price
+          ? mongoose.Types.Decimal128.fromString(price)
+          : null;
 
         // Create a new product
         const product = new Product({
@@ -48,14 +50,18 @@ export default async function handler(req, res) {
         await product.save();
 
         // Associate the product with the user
-        await User.findByIdAndUpdate(req.user.userId, { $push: { products: product._id } });
+        await User.findByIdAndUpdate(req.user.userId, {
+          $push: { products: product._id },
+        });
 
         // Send a success response
-        res.status(201).json({ message: 'Product created successfully', product });
+        res
+          .status(201)
+          .json({ message: "Product created successfully", product });
       } catch (err) {
-        console.error('Error creating product:', err); // Log the error for debugging
-        res.status(500).json({ message: 'Server error' });
+        console.error("Error creating product:", err); // Log the error for debugging
+        res.status(500).json({ message: "Server error" });
       }
     });
   });
-};
+}
